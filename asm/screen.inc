@@ -23,10 +23,14 @@ putstring:
 	cmp al, 0 ; is the low byte(the character area) of the word a null?
 	jne dochar ; if not, lets print the character
 
-	mov byte [xpos], 0
-	add byte [ypos], 1
 	
+	add byte [ypos], 1
+	mov byte [xpos], 0
+	push eax
+	push ecx
 	call scroll
+	pop ecx
+	pop eax
 	ret
 dochar2: ;so we can print out all characters
     call putchar              ; print one character
@@ -38,7 +42,11 @@ putstring_nonewline:
 	jne dochar2; if not, lets print the character
 
 	
+		push eax
+	push ecx
 	call scroll
+	pop ecx
+	pop eax
 	ret
 
 settextcolor:

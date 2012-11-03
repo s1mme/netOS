@@ -20,7 +20,7 @@ align 4
 	push ebx
 	mov byte [attrib], 0
 	call clear_screen
-	
+	mov  dword [tick_count], 0x0
 	mov esi, gdtmsg
 	call putstring_nonewline
 	call gdt_flush
@@ -80,13 +80,6 @@ align 4
 	mov esi, timermess
 	call putstring_nonewline
 	
-	mov dword [pid], -1
-	mov ebx, thread1
-	call createthread
-	
-		
-	mov ebx, thread2
-	call createthread
 	
 	call timer_install
 	mov byte [attrib], 0x09
@@ -136,7 +129,7 @@ jmp $
 %include "asm/paging.inc"
 %include "asm/pci.inc"
 %include "asm/rtl8139.inc"
-%include "asm/multitasking.inc"
+;%include "asm/multitasking.inc"
 %include "asm/arp.inc"
 %include "asm/icmp.inc"
 %include "asm/algoritm.inc"

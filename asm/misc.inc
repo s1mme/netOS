@@ -86,6 +86,36 @@ i2hex:
 
 ret   
 
+;IN: ecx - lenght of string
+;    eax - string value
+;    ebx - routine adress to return to
+
+
+strcmp:
+	mov edx, dword [eax]
+	cmp dword [stringbuffer+0], edx
+	je .true
+	jmp .end
+	.true:
+	
+	cmp byte [stringbuffer+ecx], '\n'
+	je .calc
+	jmp .end
+	
+	.calc:
+	
+	push eax
+	push ecx
+	
+	call ebx
+	
+	pop ecx
+	pop eax
+	mov dword [buffercounter], 0x0
+	mov dword [stringbuffer+0], 0x0
+	mov byte [stringbuffer+ecx], 0x0
+	.end:
+ret
 
 
 len: dd 0

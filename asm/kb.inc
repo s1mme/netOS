@@ -52,29 +52,23 @@ cli
 	;call putint
 	pop eax
 	pop ecx
-	cmp dword [stringbuffer+0], "help"
-	je .true
-	jmp .nextone
-	.true:
 	
-	cmp byte [stringbuffer+4], '\n'
-	je .calc
-	jmp .nextone
-	
-	.calc:
-	
-	push eax
-	push ecx
-	
-	call help
-	
-	pop ecx
-	pop eax
-	mov dword [buffercounter], 0x0
-	mov dword [stringbuffer+0], 0x0
-	mov byte [stringbuffer+4], 0x0
+	mov ecx, 4
+	mov dword [eax], "help"
+	mov ebx, help
+	call strcmp
 
-	.nextone:
+
+	mov ecx, 6
+	mov dword [eax], "reboot"
+	mov ebx, reboot
+	call strcmp
+	
+	mov ecx, 6
+	mov dword [eax], "uptime"
+	mov ebx, uptime
+	call strcmp
+		
 	
 	cmp al, '\n'
 	je .enter
@@ -83,7 +77,7 @@ cli
 push eax
 	mov dword [buffercounter], 0x0
 	mov dword [stringbuffer+0], 0x0
-	mov byte [stringbuffer+4], 0x0
+	mov byte [stringbuffer+6], 0x0
 	add byte [ypos], 1
 	mov byte [xpos], 0
 	push eax

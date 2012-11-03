@@ -30,7 +30,7 @@ cli
 
 
 
-	;inc dword [tick_count]
+	inc dword [tick_count]
     ;mov eax, dword [tick_count]
 
 	
