@@ -47,6 +47,7 @@ align 4
 	mov byte [attrib], 0
 	
 	;call install_rtl8139
+	call broadcom
 	
 	add byte [ypos], 1
 	mov byte [xpos], 0
@@ -105,12 +106,14 @@ align 4
 	call putstring
 	call cpu1
 	
-	
+	mov esi, helpmsg
+	call putstring
 	
 	mov esi, shelluser
 	call putstring_nonewline
 	
-				 
+
+	;mov eax, dword [pciio]	 
 	;mov eax, [0x145000] ;page fault test #2, we have mapped 1024*1024*4*(512/4) = 536870912 bytes :D that is 0x20000000 <- this will give page fault!
 
 	;mov ebx, 0 ;test exception #0
@@ -136,6 +139,7 @@ jmp $
 %include "asm/udp.inc"
 %include "asm/tcp.inc"
 %include "asm/shell.inc"
+%include "asm/bcm57780.inc"
 mem: db "Available memory:", 0
 okmsg: db "[ok]", 0
 pciscan: db "Scanning pci bus...", 0

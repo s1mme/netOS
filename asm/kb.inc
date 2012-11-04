@@ -68,7 +68,11 @@ cli
 	mov dword [eax], "uptime"
 	mov ebx, uptime
 	call strcmp
-		
+	
+	mov ecx, 5
+	mov dword [eax], "clear"
+	mov ebx, clear
+	call strcmp	
 	
 	cmp al, '\n'
 	je .enter
@@ -99,6 +103,11 @@ push eax
 	jmp .comeback
 .move:
 	sub byte [xpos],2
+	cmp byte [xpos], 12
+	je .stop
+	jmp .comeback
+	.stop:
+	add byte [xpos], 2
 .comeback:	
 	
 	

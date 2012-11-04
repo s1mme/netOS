@@ -12,7 +12,7 @@ section .data
 
 section .text
 
-mmioaddres	equ 145000
+mmioaddres	EQU 145000
 ethertypevalue equ 16
 extern network_buffer
 extern network_bufferPointer
@@ -23,58 +23,58 @@ install_rtl8139:
 cli
 	mov dword [network_bufferPointer], 0x0
 
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x52	
 	mov byte [edx], 0x0			;turning on 8139
 
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x37
 	mov byte [edx], 0x10			;reset
 
-.cont:	
-	mov dx, word [pciio]
-	add dx, 0x37
-	movzx  eax,ax
-	in eax, dx
-	movzx  eax,al
-	and    eax,0x10
-	test   eax,eax			
-    jne .cont
+;.cont:	
+;	mov dx, word [pciio]
+;	add dx, 0x37
+;	movzx  eax,ax
+;	in eax, dx
+;	movzx  eax,al
+;	and    eax,0x10
+;	test   eax,eax			
+   ; jne .cont
 	
 
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x30
 	mov eax, network_buffer		
 	mov dword [edx], eax
 	
 
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x38
 	mov word [edx], 0x0	
 	
 		
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x37
 	mov byte [edx], (1<<3)
 		
 
 	
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x40
 	mov dword [edx], 0x03000700
 
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x3c
 	mov word [edx], 0x0005		;IMR + ISR
 	
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x44
 	
 	mov eax, 0xf
 	;or eax, (1 << 7)
 	mov dword [edx],eax			 ;				0x0000071A	promisc. mode
 	
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x37
 	mov byte [edx], 0x0C
 	
@@ -82,7 +82,7 @@ cli
 	call putstring
 	mov ecx, 0
 .mac:
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x0
 	add edx, ecx
 	mov eax, dword [edx]
@@ -172,7 +172,7 @@ rtl_net_handle:
 	
 	;clear active interrupt sources
 
-    mov edx, mmioaddres
+    mov edx, 0x145000
 	add edx, 0x3e
 	mov word [edx], 0xffff	
        
@@ -201,7 +201,7 @@ align 4
 send_packet:
 	
 	
-	mov edx, mmioaddres
+	mov edx, 0x145000
 	add edx, 0x3e
 	mov word [edx], 0xffff
 	
@@ -214,13 +214,13 @@ send_packet:
 	mul edx
 	
 	
-	mov ebx, mmioaddres
+	mov ebx, 0x145000
 	add ebx, 0x20
 	add ebx, eax
 	mov dword [ebx], buffertx
 	
 	
-	mov ebx, mmioaddres
+	mov ebx, 0x145000
 	add ebx, 0x10
 	add ebx, eax
 	mov dword [ebx], ecx

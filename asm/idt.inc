@@ -184,6 +184,13 @@ dw 0x10
 dw 0x8E00
 dw 0x20
 
+;interrupt 43 -0x8139 
+base_lo_broadcom: dw 0
+dw 0x08
+dw 0x8E00
+base_hi_broadcom: dw 0
+
+
 
 
 ;interrupt 43 -0x8139 

@@ -24,7 +24,7 @@ cli
    jmp .next
 .mmio:
 				  
-	  mov edx, dword [pcimem]	;holds 0xf2001000, or 0b11110010000000000001000000000000
+	  mov edx,0xf0200000	;dword [pciio]	; pcimem, holds 0xf2001000, or 0b11110010000000000001000000000000
 	  or edx, 1
 .calc:	
  	;  MMIO adress @ 325*4096 - 0x145000
@@ -67,7 +67,7 @@ cli
    add dword [edx+ecx], ebx
    add ebx, 0x4
    add ecx, 0x4
-   cmp ecx, 5000 ;megabyte counter, total 512 mb or mapping 536870912 bytes :D 
+   cmp ecx, 500 ;megabyte counter, total 512 mb or mapping 536870912 bytes :D 
    jne .loop3
    
    mov   cr3, edx

@@ -66,31 +66,43 @@ pci_check:
 	
 	pop ecx
 	
-	mov WORD  [offset], 0x2  ;BAR #1, dvs 0x14 ger 0xf2001000 som 32-Bit Memory Space BARs, på 5:e raden dvs för 0x8139,vilket är korrekt minnes adress, dvs den loopar igenom alla enheter efter denna register adress/offset
+	mov WORD  [offset], 0x2  ;
 	push ecx
 	
 	call pci_read
 	mov dword [device], eax	
-	;and  eax, 0xFFFFFFFC			;BAR #0 dvs 0x10 ger korrekt I/O Space BARs 
+	;and  eax, 0xFFFFFFFC			 
 	
 	cmp eax, 0x8139
 	jz .bar
-	mov esi, eax
 	
-	call puthex	;ta bort denna för att se bara I/O space bar
+	cmp eax, 0x1692
+	jz .bar
+	;mov esi, eax
+	
+	call puthex
 	jmp .end
 .bar:
- 
+	mov dword [typeofdevice], eax
 	pop ecx		;på 4:e loopen hittar den I/O space bar för realtek 8139 
 	mov ebx, 0
 	push ecx
-	mov WORD  [offset], 0x10
+	mov WORD  [offset], 0x10			;BAR #1 has the mmio for broadcom! 
 	call pci_read
-	and  eax, 0xFFFFFFFC
+	and  eax, 0xFFFFFFFC ;0xFFFFFFFC for 8139
 	
 	push eax
+	cmp dword [typeofdevice], 0x1692
+	je .broadcom
+	jmp .nobroadcom
+	.broadcom:	
+	mov esi, pcibarmembroadcom
+	call putstring
+	jmp .over8139
+	.nobroadcom:
 	mov esi, pcibario
 	call putstring
+	.over8139:
 	pop eax
 	mov dword [pciio], eax
 
@@ -99,35 +111,50 @@ pci_check:
 	pop ecx		;på 4:e loopen hittar den I/O space bar för realtek 8139 
 	mov ebx, 0
 	push ecx
-	mov WORD  [offset], 0x14
+	mov WORD  [offset], 0x14   ;bar #2 has the mmio for realtek 8139!
 	
 	
 	call pci_read
 	push eax
 	
-	mov esi, pcibarmem
+	cmp dword [typeofdevice], 0x1692
+	je .broad
+	jmp .nobroad
+	.broad:	
+	mov esi, pcibariobroadcom		
 	call putstring
+	jmp .overrtl
+	.nobroad:
+	mov esi, pcibarmem		;BASE0     0xf0200000 SIZE 65536  MEM;
+	call putstring
+	.overrtl:
+	
 	pop eax
 	mov dword [pcimem], eax
 	call puthex
 	
-	;pop ecx		;på 4:e loopen hittar den I/O space bar för realtek 8139 
-	;mov ebx, 0
-	;push ecx
-	;mov WORD  [offset], 0x3c
+
+	pop ecx
+	mov ebx, 0
+	push ecx
+	mov WORD  [offset], 0x3c
 	
-	;call pci_read
-	;shl eax, 16 		; high lagrat i ax
-	;mov  word [irq], ax
 	
-	;call putbin
+	call pci_read
+	
+		
+	mov esi, irqnumber
+	push eax
+	call putstring
+	pop eax
+	call puthex
 .end:
 	
 	pop ecx
 	
 	inc ecx
 
-	cmp ecx, 32
+	cmp ecx, 256
 	jl .loop2
 	
 ret
@@ -136,9 +163,12 @@ ret
 section .data
 pcibarmem: db "Available memory space bar for RTL 8139:", 0	
 pcibario: db "Available I/O space bar for RTL 8139:", 0
+irqnumber: db "irq:", 0
+pcibarmembroadcom: db "Available memory space bar for NetLink BCM57780:", 0	
+pcibariobroadcom: db "Available I/O space bar for NetLink BCM57780:", 0
 	irq: dw 0
 	pcimem: dd 0
-	pciio: dw 0
+	pciio: dd 0
 	adress: dd 0
 	bus:    dd 0
 	slot:   dd 0
@@ -148,3 +178,4 @@ pcibario: db "Available I/O space bar for RTL 8139:", 0
 	device: dd 0
 	busloop: dd 0
 	slotnumber: dd 0
+	typeofdevice: dd 0

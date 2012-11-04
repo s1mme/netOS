@@ -22,7 +22,11 @@ help:
 	call putstring 
 	mov byte [attrib], 0
 	
-		
+	mov byte [xpos], 0
+	mov byte [attrib], 0x05
+	mov esi, clearmsg
+	call putstring 
+	mov byte [attrib], 0
 	
 ret
 
@@ -47,9 +51,13 @@ uptime:
 	mov byte [attrib], 0x0
 ret
 
-
+clear:
+call clear_screen
+mov byte [ypos], 0
+ret
 packetmsg: db "List of commands:", 0
 shelluser: db "netOS[root] $ ", 0
 resetcpu: db "reboot - resets the computer", 0
 uptimemsg: db "uptime - displays current uptime in seconds", 0
-
+clearmsg: db "clear - clears the screen", 0
+helpmsg: db "type 'help' for more information", 0

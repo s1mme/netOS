@@ -58,6 +58,16 @@ mov ebx, rtl_net_handle
 	mov  word [base_hi_rtl], bx
 	mov  word [base_lo_rtl], ax
 	
+	
+	
+	
+	mov eax,  broadcom_net_handle ;hämta labelns adress
+	mov ebx, broadcom_net_handle
+	shr ebx, 16 ; high lagrat i bx
+	
+	mov  word [base_hi_broadcom], bx
+	mov  word [base_lo_broadcom], ax
+	
 	mov dword [tx_desc], 0
 		  pop gs
     pop fs
