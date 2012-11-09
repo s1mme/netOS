@@ -15,11 +15,6 @@ broadcom_init:
 	add edx, 0x4000
 	mov dword [edx], 0b00000000000000000000000000000010
 	
-	;Write the T3_MAGIC_NUMBER (i.e., 0x4B657654) to the MAC memory at 0xb50 
-	mov edx, 0x145000
-	add edx, 0xb50
-	mov dword [edx], 0x4B657654
-	
 	;Enable MAC memory space decode and bus mastering
 	mov edx, 0x145000
 	add edx, 0x04
@@ -30,19 +25,24 @@ broadcom_init:
 	add edx, 0x4000
 	mov dword [edx], 0b00000000000000000000000000000010
 	
-	;Set the Enable_Indirect_Access bit and the Enable the PCI State register and Enable the PCI Clock Control register 
+	;Enable the PCI State register and Enable the PCI Clock Control register 
 	mov edx, 0x145000
 	add edx, 0x68
 	mov dword [edx], 0b00000000000000000000000000110000
 	
+	;Initialize the Ethernet MAC Mode register 
 	mov edx, 0x145000
 	add edx, 0x400
 	mov dword [edx], 0x00000000
 	
+	
+	;Set the default PCI Command Encoding for Read/Write Transactions
 	mov edx, 0x145000
 	add edx, 0x6c
 	mov dword [edx], 0b11111111001111110000000000000000		
 	
+	
+	;Configure the host-based send rings
 	mov edx, 0x145000
 	add edx, 0x6800
 	mov dword [edx], 0b00000000000000100000000000000000
@@ -94,10 +94,10 @@ broadcom_init:
 	add eax, 0x400	
 	mov dword [edx],eax     ;0x4000 + ((1*32*128)/4	
 	
+	;Initialize Receive Return Rings. The Receive Return RCBs are located in the Miscellaneous Memory region from 0x200 to 0x2FF
 	mov edx, 0x145000
 	add edx, 0x280
-	mov eax, recieve_buffer_returnring		;Initialize Receive Return Rings. The Receive Return RCBs are located in the Miscellaneous Memory region from 0x200 to 0x2FF
-	mov eax, dword [edx]
+	mov dword [edx],recieve_buffer_returnring 
 	
 	mov edx, 0x145000
 	add edx, 0x245C
@@ -172,6 +172,7 @@ broadcom_init:
 	mov ebx, 0x145000
 	add ebx, 0x3c38 ;  
 	mov dword [ebx], status_block
+	
 	;Enable the host coalescing engine
 	mov ebx, 0x145000
 	add ebx, 0x3c00 ;  
@@ -187,7 +188,7 @@ broadcom_init:
 	add ebx, 0x2000 ;  
 	mov dword [ebx], 0b00000000000000000000000000000010
 	
-	;Enable and clear statistics and 77. Enable DMA engines.
+	;Enable and clear statistics. Enable DMA engines.
 	mov ebx, 0x145000
 	add ebx, 0x400 ;  
 	mov dword [ebx], 0b00000000011100001101100000000000
@@ -227,6 +228,7 @@ broadcom_init:
 	add ebx, 0x1c00 ;  
 	mov dword [ebx], 0b00000000000000000000000000000110
 
+	;Enable the Receive BD Initiator Functional Block
 	mov ebx, 0x145000
 	add ebx, 0x2c00 ;  
 	mov dword [ebx], 0b00000000000000000000000000000110	
@@ -274,13 +276,6 @@ broadcom_init:
 	mov edx, 0x145000
 	add edx, 0x68
 	mov dword [edx], 0b00000000000000000000000000000001
-	
-;	mov ebx, 0x145000
-;	add ebx, 0x1b
-;	mov dword [ebx], 0xffff	
-	
-	mov esi, msg
-	call putstring	
 		
 	mov edx, 0x145000
 	add edx, 0x40c
@@ -359,14 +354,14 @@ cli
 	mov eax, dword [ebx]
 	jmp .update		;Check the Updated bit in the status word
 
-
 	
 	.end:
 	pop eax
+	;Enable interrupts
 	mov ebx, 0x145000
 	add ebx, 0x200 ;  
-	shl eax, 23
-	or eax, 0xff000000
+	shl eax, 24
+	;and eax, 0xff000000
 	mov dword [ebx], eax
 
 	mov al, 0x20
