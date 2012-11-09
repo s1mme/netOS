@@ -32,7 +32,7 @@ cli
 	mov byte [edx], 0x10			;reset
 
 ;.cont:	
-;	mov dx, word [pciio]
+;	mov dx, 0xc100
 ;	add dx, 0x37
 ;	movzx  eax,ax
 ;	in eax, dx
@@ -121,7 +121,7 @@ rtl_net_handle:
     mov gs, ax
     
    
-    mov dx, word [pciio]
+    mov dx, 0xc100
 	add dx, 0x37
 	in al, dx
 	test al, (1 << 0)
@@ -137,7 +137,7 @@ rtl_net_handle:
 	call arpsearcher
 	
 	
-    mov dx, word [pciio]
+    mov dx, 0xc100
 	add dx, 0x3e
 	in ax, dx  
 	push ax  

@@ -24,7 +24,7 @@ cli
    jmp .next
 .mmio:
 				  
-	  mov edx,0xf0200000	;dword [pciio]	; pcimem, holds 0xf2001000, or 0b11110010000000000001000000000000
+	  mov edx,dword [pciio]	;dword [pciio]	; pcimem, holds 0xf2001000, or 0b11110010000000000001000000000000
 	  or edx, 1
 .calc:	
  	;  MMIO adress @ 325*4096 - 0x145000

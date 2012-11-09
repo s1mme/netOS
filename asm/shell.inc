@@ -51,6 +51,7 @@ uptime:
 	mov byte [attrib], 0x0
 ret
 
+
 clear:
 call clear_screen
 mov byte [ypos], 0

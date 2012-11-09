@@ -38,7 +38,7 @@ cli
 	;call scheduler
 	mov esp, eax
 	
-		mov    al, 0x20
+	mov    al, 0x20
 	mov dx, 0x20
 	out dx, al      ; outb(0x20, 0x20)
 	pop gs					

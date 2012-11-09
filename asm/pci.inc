@@ -89,21 +89,31 @@ pci_check:
 	push ecx
 	mov WORD  [offset], 0x10			;BAR #1 has the mmio for broadcom! 
 	call pci_read
-	and  eax, 0xFFFFFFFC ;0xFFFFFFFC for 8139
 	
-	push eax
+	
+	
 	cmp dword [typeofdevice], 0x1692
 	je .broadcom
 	jmp .nobroadcom
 	.broadcom:	
+	and  eax, 0xFFFFFFF0 ;for broadcom
 	mov esi, pcibarmembroadcom
+	push eax
 	call putstring
+	
+	
+	
+	pop eax
 	jmp .over8139
 	.nobroadcom:
+	and  eax, 0xFFFFFFFC ;0xFFFFFFFC for 8139
 	mov esi, pcibario
+	push eax
 	call putstring
-	.over8139:
 	pop eax
+	.over8139:
+	
+	
 	mov dword [pciio], eax
 
 	call puthex
@@ -133,7 +143,6 @@ pci_check:
 	mov dword [pcimem], eax
 	call puthex
 	
-
 	pop ecx
 	mov ebx, 0
 	push ecx
@@ -147,7 +156,9 @@ pci_check:
 	push eax
 	call putstring
 	pop eax
+	and eax, 0xff
 	call puthex
+	
 .end:
 	
 	pop ecx

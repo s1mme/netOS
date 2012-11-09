@@ -17,6 +17,10 @@ align 4
 			
 	mov esp, 0x190000         ; set up the stack
 	;cli
+	
+	
+
+	
 	push ebx
 	mov byte [attrib], 0
 	call clear_screen
@@ -46,8 +50,9 @@ align 4
 	call putstring_nonewline
 	mov byte [attrib], 0
 	
+	;call broadcom
 	;call install_rtl8139
-	call broadcom
+	
 	
 	add byte [ypos], 1
 	mov byte [xpos], 0
@@ -66,6 +71,8 @@ align 4
 		
 	call idt_flush
 	
+		
+		
 	mov byte [attrib], 0x09
 	mov esi, okmsg
 	call putstring_nonewline
@@ -105,13 +112,18 @@ align 4
 	mov esi, cputype
 	call putstring
 	call cpu1
+	add byte [ypos], 1
 	
+	add byte [ypos], 1
 	mov esi, helpmsg
 	call putstring
+	
+	;call broadcom
 	
 	mov esi, shelluser
 	call putstring_nonewline
 	
+
 
 	;mov eax, dword [pciio]	 
 	;mov eax, [0x145000] ;page fault test #2, we have mapped 1024*1024*4*(512/4) = 536870912 bytes :D that is 0x20000000 <- this will give page fault!
@@ -132,7 +144,7 @@ jmp $
 %include "asm/paging.inc"
 %include "asm/pci.inc"
 %include "asm/rtl8139.inc"
-;%include "asm/multitasking.inc"
+
 %include "asm/arp.inc"
 %include "asm/icmp.inc"
 %include "asm/algoritm.inc"

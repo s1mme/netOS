@@ -5,9 +5,12 @@ section .bss
 
 getchar: resb 100
 stringbuffer: resb 100
+
 section .data
+
 kbdus: db 0,  27, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=','\t','q', 'w', 'e', 'r','t', 'y', 'u', 'i', 'o', 'p', '[', ']', '\n', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';',	'\', '`', '\b', 'z', 'x', 'c', 'v', 'b', 'n','m', ',', '.', '/',   0,	'*',0,' '
 section .text
+
 kb_handle:
 cli	
 	push eax
@@ -33,7 +36,7 @@ cli
 	
                                      
     in al, 0x60   ; get key scancode!
-    test  al,10000000b
+    test  al,0b10000000
 	jnz .done
     movzx eax, al
     mov al, BYTE [eax + kbdus]
@@ -48,31 +51,37 @@ cli
 
 	push ecx
 	push eax
-	mov eax, dword [ buffercounter]
+	mov eax, dword [buffercounter]
 	;call putint
 	pop eax
 	pop ecx
 	
 	mov ecx, 4
-	mov dword [eax], "help"
+	mov esi, [helpmessage]
 	mov ebx, help
 	call strcmp
 
 
 	mov ecx, 6
-	mov dword [eax], "reboot"
+	mov esi, [rebootmsg]
 	mov ebx, reboot
 	call strcmp
 	
 	mov ecx, 6
-	mov dword [eax], "uptime"
+	mov esi, [uptimemessage]
 	mov ebx, uptime
 	call strcmp
 	
 	mov ecx, 5
-	mov dword [eax], "clear"
+	mov esi, [clearmessage]
 	mov ebx, clear
 	call strcmp	
+
+	mov ecx, 4
+	mov esi, [testmessage]
+	mov ebx, broadcom_init
+	call strcmp	
+	
 	
 	cmp al, '\n'
 	je .enter
@@ -146,6 +155,10 @@ push eax
 sti	                                            
 	iret                                              
 align 4
-
+testmessage: db "test", 0
+helpmessage: db "help", 0
+rebootmsg: db "reboot", 0
+uptimemessage: db "uptime", 0
+clearmessage: db "clear", 0 
 getvarchar: db 0
 buffercounter: dd 0

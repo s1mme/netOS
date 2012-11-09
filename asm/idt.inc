@@ -137,10 +137,12 @@ dw 0x08
 dw 0x8E00
 base_hi_timer: dw 0
 
+
+
 ;----IRQ :D----
 ;interrupt 33 -keyboard 0
 base_lo_kb: dw 0
-dw 0x08
+dw 0x8
 dw 0x8E00
 base_hi_kb: dw 0
 
@@ -184,12 +186,20 @@ dw 0x10
 dw 0x8E00
 dw 0x20
 
-;interrupt 43 -0x8139 
+
+dw 0x0000
+dw 0x10
+dw 0x8E00
+dw 0x20
+
+
+
+
+;interrupt 43 -0x1692
 base_lo_broadcom: dw 0
-dw 0x08
+dw 0x8
 dw 0x8E00
 base_hi_broadcom: dw 0
-
 
 
 

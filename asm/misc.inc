@@ -87,13 +87,13 @@ i2hex:
 ret   
 
 ;IN: ecx - lenght of string
-;    eax - string value
+;    esi - string value
 ;    ebx - routine adress to return to
 
 
 strcmp:
-	mov edx, dword [eax]
-	cmp dword [stringbuffer+0], edx
+
+	cmp dword [stringbuffer+0], esi
 	je .true
 	jmp .end
 	.true:
